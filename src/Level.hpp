@@ -1,7 +1,7 @@
 #pragma once // include guard
 #include <string>
 
-namespace aynlog {
+namespace asynlog {
     class LogLevel {
     public:
         // enum class to avoid name conflicts with other libraries
