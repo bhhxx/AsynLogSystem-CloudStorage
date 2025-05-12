@@ -1,3 +1,9 @@
+/**
+ * @file Level.hpp
+ * @brief LogLevel class
+ * @author bhhxx
+ * @date 2025-05-10
+ */
 #pragma once // include guard
 #include <string>
 
