@@ -23,7 +23,7 @@ class Date {
 public:
     /**
      * @brief Gets the current system time.
-     * * @return time_t The current calendar time expressed in seconds since 
+     * @return time_t The current calendar time expressed in seconds since 
      * the Epoch (`00:00:00 UTC, January 1, 1970`).
      */
     static time_t Now() { return time(nullptr); }
@@ -214,9 +214,9 @@ private:
         Json::Value root;
         asynlog::Util::JsonUtil::UnSerialize(content, &root);
         buffer_size = root["buffer_size"].asInt64();
-        threshold = root["threshold"].asInt();
-        linear_growth = root["linear_growth"].asInt();
-        flush_log = root["flush_log"].asInt();
+        threshold = root["threshold"].asInt64();
+        linear_growth = root["linear_growth"].asInt64();
+        flush_log = root["flush_log"].asInt64();
         backup_addr = root["backup_addr"].asString();
         backup_port = root["backup_port"].asInt();
         thread_count = root["thread_count"].asInt();
