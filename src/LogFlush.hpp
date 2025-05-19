@@ -4,6 +4,7 @@
  * @author bhhxx
  * @date 2025-05-20
 */
+#pragma once
 #include <iostream> // for cout
 #include <memory> // for shared_ptr
 #include <string> // for string 
