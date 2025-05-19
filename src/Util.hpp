@@ -69,7 +69,7 @@ public:
     static void CreateDirectory(const std::string& pathname) {
         if (pathname.empty()) {
             // do nothing but send a warning
-            std::cerr << "CreateDirectory: pathname is empty" << std::endl;
+            std::cerr << "CreateDirectory: Path name is empty" << std::endl;
             return;
         }
         if (!Exists(pathname)) {
