@@ -60,6 +60,12 @@ public:
     }
 
     /**
+     * @brief Get the beginning pointer
+     * @return A pointer to the beginning of the data to be read
+     */
+    const char *Begin() { return &buffer_[read_pos_]; }
+    
+    /**
      * @brief Get the writable size of the buffer
      * @return The size of the buffer that can be written to
      */
