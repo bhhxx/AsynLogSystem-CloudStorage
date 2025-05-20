@@ -112,15 +112,15 @@ private:
     }
 
 private:
-    AsynType asyn_type_;
-    std::atomic<bool> stop_;
-    std::mutex mtx_;
-    asynlog::Buffer buffer_producer_;
+    AsynType asyn_type_;                    // the type of asyn
+    std::atomic<bool> stop_;                // flag for stop
+    std::mutex mtx_;                        // mutex
+    asynlog::Buffer buffer_producer_;       // two buffer for producer and consumer
     asynlog::Buffer buffer_consumer_;
-    std::condition_variable cond_producer_;
+    std::condition_variable cond_producer_; // two cv for producer and consumer
     std::condition_variable cond_consumer_;
-    std::thread thread_;
-    functor callback_;
+    std::thread thread_;                    // one thread for consumer
+    functor callback_;                      // the functor to be excuited if there are something in consumer buffer
 };
 
 } // namespace asynlog
