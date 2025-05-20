@@ -10,7 +10,7 @@
 #include <string> // for string 
 #include <unistd.h> // for fsync
 #include "Util.hpp" // for Util::File, Util::Date
-extern asynlog::Util::JsonData* g_conf_data; // singleton instance of JsonData
+extern asynlog::Util::JsonData* conf_data; // singleton instance of JsonData
 namespace asynlog 
 {
 
@@ -80,12 +80,12 @@ public:
             std::cout <<__FILE__<<__LINE__<< "write log file failed" << std::endl;
             perror(NULL);
         }
-        if(g_conf_data->flush_log == 1) {
+        if(conf_data->flush_log == 1) {
             if(fflush(fs_) == EOF){
                 std::cout << __FILE__ << __LINE__ << "fflush file failed" << std::endl;
                 perror(NULL);
             }
-        } else if (g_conf_data->flush_log == 2) {
+        } else if (conf_data->flush_log == 2) {
             fflush(fs_);
             fsync(fileno(fs_));
         }
@@ -130,12 +130,12 @@ public:
             perror(NULL);
         }
         cur_size_ += len;
-        if(g_conf_data->flush_log == 1) {
+        if(conf_data->flush_log == 1) {
             if(fflush(fs_) == EOF){
                 std::cout << __FILE__ << __LINE__ << "fflush file failed" << std::endl;
                 perror(NULL);
             }
-        } else if (g_conf_data->flush_log == 2) {
+        } else if (conf_data->flush_log == 2) {
             fflush(fs_);
             fsync(fileno(fs_));
         }
