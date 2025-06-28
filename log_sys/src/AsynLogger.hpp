@@ -68,7 +68,9 @@ public:
             perror("vasprintf failed!!!: ");
         }
         va_end(va);
-        serialize(LogLevel::value::INFO, file, line, ret);
+        std::string single_log_data;
+        serialize(LogLevel::value::INFO, file, line, ret, single_log_data);
+        worker_->Push(single_log_data.c_str(), single_log_data.size()); // push formatted log to buffer
         free(ret);
         ret = nullptr;
     }
@@ -82,7 +84,9 @@ public:
             perror("vasprintf failed!!!: ");
         }
         va_end(va);
-        serialize(LogLevel::value::ERROR, file, line, ret);
+        std::string single_log_data;
+        serialize(LogLevel::value::ERROR, file, line, ret, single_log_data);
+        worker_->Push(single_log_data.c_str(), single_log_data.size()); // push formatted log to buffer
         free(ret);
         ret = nullptr;
     }
@@ -96,7 +100,9 @@ public:
             perror("vasprintf failed!!!: ");
         }
         va_end(va);
-        serialize(LogLevel::value::WARN, file, line, ret);
+        std::string single_log_data;
+        serialize(LogLevel::value::WARN, file, line, ret, single_log_data);
+        worker_->Push(single_log_data.c_str(), single_log_data.size()); // push formatted log to buffer
         free(ret);
         ret = nullptr;
     }
@@ -110,7 +116,9 @@ public:
             perror("vasprintf failed!!!: ");
         }
         va_end(va);
-        serialize(LogLevel::value::FATAL, file, line, ret);
+        std::string single_log_data;
+        serialize(LogLevel::value::FATAL, file, line, ret, single_log_data);
+        worker_->Push(single_log_data.c_str(), single_log_data.size()); // push formatted log to buffer
         free(ret);
         ret = nullptr;
     }
