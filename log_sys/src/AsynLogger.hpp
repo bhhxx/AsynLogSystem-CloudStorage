@@ -16,8 +16,9 @@
 #include "Level.hpp" // for LogLevel
 #include "Message.hpp" // for LogMessage
 #include "ThreadPool.hpp" // for ThreadPool
+#include "backup/ClientBackup.hpp"
 
-// extern ThreadPool *tp;
+extern ThreadPool *tp;
 
 namespace asynlog
 {
@@ -157,14 +158,15 @@ protected:
     void serialize(LogLevel::value level, const std::string &file, size_t line, char *ret, std::string &data) {
         LogMessage msg(level, file, line, logger_name_, ret);
         data = msg.format();
-        // if (level == LogLevel::value::FATAL || level == LogLevel::value::ERROR) {
-        //     try {
-
-        //     }
-        //     catch (const std::runtime_error &e){
-
-        //     }
-        // }
+        if (level == LogLevel::value::FATAL || level == LogLevel::value::ERROR) {
+            try {
+                auto ret = tp->enqueue(start_log_backup, data);
+                ret.get();
+            }
+            catch (const std::runtime_error &e) {
+                std::cout << __FILE__ << __LINE__ << "thread pool closed" << std::endl;
+            }
+        }
     }
 
     /**

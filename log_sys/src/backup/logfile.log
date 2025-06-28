@@ -1,0 +1,2 @@
+127.0.0.1:54900[20:49:55][140089291859776][ERROR][test_logger][test_manager.cpp:21]	This is a test log message: Hello, World!
+127.0.0.1:55088[21:02:10][140200477030208][ERROR][test_logger][test_manager.cpp:21]	This is a test log message: Hello, World!
