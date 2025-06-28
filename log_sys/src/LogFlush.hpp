@@ -1,6 +1,6 @@
 /**
  * @file LogFlush.hpp
- * @brief Provides the LogFlush class and its derived classes for logging.
+ * @brief Provides the LogFlush class and its derived classes for log flush.
  * @author bhhxx
  * @date 2025-05-20
 */

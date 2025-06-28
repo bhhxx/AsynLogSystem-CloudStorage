@@ -1,6 +1,6 @@
 /**
  * @file AsynBuffer.hpp
- * @brief Buffer class
+ * @brief Buffer class: provide a buffer for asynlog.
  * @author bhhxx
  * @date 2025-05-12
  */

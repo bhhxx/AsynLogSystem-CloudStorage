@@ -1,6 +1,6 @@
 /**
  * @file AsynLogger.hpp
- * @brief Asynchronous Logger
+ * @brief AsynLogger class: basic logging; LoggerBuilder: using builder model to create log object.
  * @author bhhxx
  * @date 2025-05-20
 */
@@ -44,7 +44,7 @@ public:
     AsynLogger(const std::string logger_name, AsynType asyntype, std::vector<LogFlush::ptr> flushes) :
         logger_name_(logger_name),
         asyntype_(asyntype),
-        flushes_(flushes) {
+        flushes_(flushes) {                                   // functor         who to call      the first param  
             worker_ = std::make_shared<AsynWorker>(std::bind(&AsynLogger::RealFlush, this, std::placeholders::_1), asyntype);
         }
     /**
@@ -53,10 +53,10 @@ public:
     ~AsynLogger() {}
 
     /**
-     * @brief Info log
-     * @param file name of the file which log
-     * @param line line number of the log
-     * @param format the log
+     * @brief Info Error Warn Fatal Debug log
+     * @param file filename where log generates
+     * @param line line number where log generates
+     * @param format the log content
      * @param ... additional arguments
     */
     void Info(const std::string &file, size_t line, const std::string format, ...) {
@@ -73,13 +73,6 @@ public:
         ret = nullptr;
     }
 
-    /**
-     * @brief Error log
-     * @param file name of the file which log
-     * @param line line number of the log
-     * @param format the log
-     * @param ... additional arguments
-    */
     void Error(const std::string &file, size_t line, const std::string format, ...) {
         va_list va;
         va_start(va, format);
@@ -94,13 +87,6 @@ public:
         ret = nullptr;
     }
 
-    /**
-     * @brief Warn log
-     * @param file name of the file which log
-     * @param line line number of the log
-     * @param format the log
-     * @param ... additional arguments
-    */
     void Warn(const std::string &file, size_t line, const std::string format, ...) {
         va_list va;
         va_start(va, format);
@@ -115,13 +101,6 @@ public:
         ret = nullptr;
     }
 
-    /**
-     * @brief Fatal log
-     * @param file name of the file which log
-     * @param line line number of the log
-     * @param format the log
-     * @param ... additional arguments
-    */
     void Fatal(const std::string &file, size_t line, const std::string format, ...) {
         va_list va;
         va_start(va, format);
@@ -136,23 +115,18 @@ public:
         ret = nullptr;
     }
 
-    /**
-     * @brief Debug log
-     * @param file name of the file which log
-     * @param line line number of the log
-     * @param format the log
-     * @param ... additional arguments
-    */
     void Debug(const std::string &file, size_t line, const std::string format, ...) {
-        va_list va;
-        va_start(va, format);
+        va_list va; // variable param
+        va_start(va, format); // using format to locate variable list
         char *ret;
-        int r = vasprintf(&ret, format.c_str(), va);
+        int r = vasprintf(&ret, format.c_str(), va); // using va to replace the symbol like %d, and ret store the final str
         if (r == -1) {
             perror("vasprintf failed!!!: ");
         }
-        va_end(va);
-        serialize(LogLevel::value::DEBUG, file, line, ret);
+        va_end(va); // pair with va_start for robustness
+        std::string single_log_data;
+        serialize(LogLevel::value::DEBUG, file, line, ret, single_log_data);
+        worker_->Push(single_log_data.c_str(), single_log_data.size()); // push formatted log to buffer
         free(ret);
         ret = nullptr;
     }
@@ -172,9 +146,9 @@ protected:
      * @param line line number of the log
      * @param ret the log message
     */
-    void serialize(LogLevel::value level, const std::string &file, size_t line, char *ret) {
+    void serialize(LogLevel::value level, const std::string &file, size_t line, char *ret, std::string &data) {
         LogMessage msg(level, file, line, logger_name_, ret);
-        std::string data = msg.format();
+        data = msg.format();
         // if (level == LogLevel::value::FATAL || level == LogLevel::value::ERROR) {
         //     try {
 
@@ -183,16 +157,6 @@ protected:
 
         //     }
         // }
-        Flush(data.c_str(), data.size());
-    }
-
-    /**
-     * @brief Flush the log message to the worker
-     * @param data log message
-     * @param len length of the log message
-    */
-    void Flush(const char *data, size_t len) {
-        worker_->Push(data, len);
     }
 
     /**
@@ -257,6 +221,7 @@ public:
         );
     }
 protected:
+    // these initialized variable can be used by default_log
     std::string logger_name_ = "async_logger";      // default logger name
     std::vector<asynlog::LogFlush::ptr> flushes_;   // vector for different Flush
     AsynType asyn_type_ = AsynType::ASYNC_SAFE;     // default async type

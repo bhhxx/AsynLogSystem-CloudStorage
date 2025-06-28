@@ -1,6 +1,6 @@
 /**
  * @file Level.hpp
- * @brief LogLevel class
+ * @brief LogLevel class.
  * @author bhhxx
  * @date 2025-05-10
  */

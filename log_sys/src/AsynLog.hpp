@@ -1,6 +1,6 @@
 /**
  * @file AsynLog.hpp
- * @brief AsynLog header file
+ * @brief AsynLog header file.
  * @author bhhxx
  * @date 2025-05-20
 */

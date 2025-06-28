@@ -1,6 +1,6 @@
 /**
  * @file AsynWorker.hpp
- * @brief Asynchronous worker class for logging
+ * @brief Asynchronous worker object use producer/consumer to seperate data gen and data flush.
  * @author bhhxx
  * @date 2025-05-20
 */
@@ -61,14 +61,14 @@ public:
     ~AsynWorker() { Stop(); }
 
     /**
-     * @brief Producer: Push data into the buffer
+     * @brief Push data into the producer buffer
      * @param data The data to be pushed into the buffer
      * @param len The length of the data to be pushed
     */
     void Push(const char* data, size_t len) { // producer
         std::unique_lock<std::mutex> lock(mtx_);
         if (asyn_type_ == AsynType::ASYNC_SAFE) {
-            cond_producer_.wait(lock, [&](){
+            cond_producer_.wait(lock, [&](){ // using lambda function to pred
                 return len <= buffer_producer_.WriteableSize();
             });
         }
@@ -93,12 +93,10 @@ private:
         while (1) {
             { // use {} to limit the scope of the lock
                 std::unique_lock<std::mutex> lock(mtx_);
-                if (buffer_producer_.IsEmpty() && stop_) { // wait for data
-                    cond_consumer_.wait(lock, [&](){
-                        return stop_ || !buffer_producer_.IsEmpty();
-                    });
-                }
-                buffer_producer_.Swap(buffer_consumer_);
+                cond_consumer_.wait(lock, [&](){ // wait for producer produces data
+                    return stop_ || !buffer_producer_.IsEmpty();
+                });
+                buffer_producer_.Swap(buffer_consumer_); // swap buffer
                 if (asyn_type_ == AsynType::ASYNC_SAFE) {
                     cond_producer_.notify_one();
                 }
@@ -107,7 +105,7 @@ private:
                 callback_(buffer_consumer_);
                 buffer_consumer_.Reset();
             }            
-            if (stop_ && buffer_producer_.IsEmpty()) return;
+            if (stop_ && buffer_producer_.IsEmpty()) return; // when stop and there is no data in producer buffer, return
         }
     }
 

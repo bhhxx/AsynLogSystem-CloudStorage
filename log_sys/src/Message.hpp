@@ -1,6 +1,6 @@
 /** 
  * @file Message.hpp
- * @brief Message class for logging
+ * @brief Message object save all content of one log, we can get the final formatted log from it.
  * @author bhhxx
  * @date 2025-05-18
 */

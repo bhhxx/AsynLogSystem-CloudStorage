@@ -1,6 +1,6 @@
 /**
  * @file Manager.hpp
- * @brief LoggerManager header file
+ * @brief LoggerManager class, this singleton object manage all log object.
  * @author bhhxx
  * @date 2025-05-20
 */
